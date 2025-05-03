@@ -4,7 +4,7 @@ import { useEffect } from "react";
 
 type RequestsListProps = {
   requests: AppRequest[];
-  activeRequestId: string;
+  activeRequestId?: string;
   setActiveRequestId: (requestId: string) => void;
 };
 

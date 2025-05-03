@@ -3,17 +3,20 @@
 import { useAction } from "next-safe-action/hooks";
 import { getUrlPayload } from "./actions";
 import { useEffect, useState, useRef } from "react";
-import { RequestTypePill } from "@/components/requestTypePill";
 import { RequestsList } from "@/components/requestsList";
 
 export default function App() {
   const { execute, result } = useAction(getUrlPayload);
   const [url, setUrl] = useState("");
-  const [requests, setRequests] = useState<any[]>(getRequests());
-  const [selectedRequest, setSelectedRequest] = useState<any>(getRequests()[0]);
+  const [requests, setRequests] = useState<AppRequest[]>(getRequests());
+  const [selectedRequest, setSelectedRequest] = useState<
+    AppRequest | undefined
+  >(getRequests()[0]);
   const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
+    if (!selectedRequest) return;
+
     updateRequest(selectedRequest.id, { lastResponse: result });
     setSelectedRequest(getRequestById(selectedRequest.id));
     setRequests(getRequests());
@@ -81,7 +84,7 @@ export default function App() {
       <div className="p-4 col-span-2">
         <RequestsList
           requests={requests}
-          activeRequestId={selectedRequest.id}
+          activeRequestId={selectedRequest?.id}
           setActiveRequestId={(requestId) =>
             setSelectedRequest(getRequestById(requestId))
           }
@@ -101,11 +104,11 @@ export default function App() {
             name="method"
             value={selectedRequest?.method}
             onChange={(e) => {
-              updateRequest(selectedRequest.id, {
+              updateRequest(selectedRequest!.id, {
                 method: e.target.value as RequestMethod,
               });
               setRequests(getRequests());
-              setSelectedRequest(getRequestById(selectedRequest.id));
+              setSelectedRequest(getRequestById(selectedRequest!.id));
             }}
           >
             <option value="GET">GET</option>
@@ -119,7 +122,7 @@ export default function App() {
         </div>
       </div>
       <div className="p-4 col-span-5">
-        <pre>{JSON.stringify(selectedRequest.lastResponse, null, 2)}</pre>
+        <pre>{JSON.stringify(selectedRequest?.lastResponse, null, 2)}</pre>
       </div>
     </div>
   );
