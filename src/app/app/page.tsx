@@ -17,7 +17,7 @@ export default function App() {
   useEffect(() => {
     if (!selectedRequest) return;
 
-    updateRequest(selectedRequest.id, { lastResponse: result });
+    updateRequest(selectedRequest.id, { lastResponse: result.data });
     setSelectedRequest(getRequestById(selectedRequest.id));
     setRequests(getRequests());
   }, [result]); // eslint-disable-line react-hooks/exhaustive-deps
