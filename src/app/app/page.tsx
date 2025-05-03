@@ -8,11 +8,16 @@ import { RequestsList } from "@/components/requestsList";
 export default function App() {
   const { execute, result } = useAction(getUrlPayload);
   const [url, setUrl] = useState("");
-  const [requests, setRequests] = useState<AppRequest[]>(getRequests());
+  const [requests, setRequests] = useState<AppRequest[]>([]);
   const [selectedRequest, setSelectedRequest] = useState<
     AppRequest | undefined
-  >(getRequests()[0]);
+  >();
   const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
+
+  useEffect(() => {
+    setRequests(getRequests());
+    setSelectedRequest(getRequests()[0]);
+  }, []);
 
   useEffect(() => {
     if (!selectedRequest) return;
@@ -24,6 +29,7 @@ export default function App() {
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
+      if (typeof window === "undefined") return;
       // Only trigger on body
       if (!(event.target instanceof HTMLBodyElement)) {
         return;
