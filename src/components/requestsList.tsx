@@ -1,5 +1,6 @@
 import { AppRequest } from "@/app/app/page";
 import { RequestTypePill } from "./requestTypePill";
+import { useEffect } from "react";
 
 type RequestsListProps = {
   requests: AppRequest[];
@@ -12,6 +13,32 @@ export const RequestsList = ({
   activeRequestId,
   setActiveRequestId,
 }: RequestsListProps) => {
+  useEffect(() => {
+    const keydownListener = (event: KeyboardEvent) => {
+      if (event.key === "ArrowDown" || event.key === "j") {
+        const currentIndex = requests.findIndex(
+          (request) => request.id === activeRequestId
+        );
+        const nextIndex = currentIndex + 1;
+        setActiveRequestId(requests[nextIndex].id);
+      }
+
+      if (event.key === "ArrowUp" || event.key === "k") {
+        const currentIndex = requests.findIndex(
+          (request) => request.id === activeRequestId
+        );
+        const nextIndex = currentIndex - 1;
+        setActiveRequestId(requests[nextIndex].id);
+      }
+    };
+
+    window.addEventListener("keydown", keydownListener);
+
+    return () => {
+      window.removeEventListener("keydown", keydownListener);
+    };
+  }, [activeRequestId, requests, setActiveRequestId]);
+
   return (
     <div className="flex flex-col gap-2">
       {requests.map((request) => (
