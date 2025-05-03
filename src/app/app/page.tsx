@@ -5,6 +5,8 @@ import { getUrlPayload } from "./actions";
 import { useEffect, useState, useRef } from "react";
 import { RequestsList } from "@/components/requestsList";
 
+export const dynamic = "force-dynamic";
+
 export default function App() {
   const { execute, result } = useAction(getUrlPayload);
   const [url, setUrl] = useState("");
