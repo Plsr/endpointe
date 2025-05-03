@@ -20,7 +20,7 @@ export default function App() {
     updateRequest(selectedRequest.id, { lastResponse: result });
     setSelectedRequest(getRequestById(selectedRequest.id));
     setRequests(getRequests());
-  }, [result]);
+  }, [result]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
