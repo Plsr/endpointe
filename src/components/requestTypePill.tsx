@@ -1,4 +1,4 @@
-type RequestMethod = "GET" | "POST" | "PATCH" | "PUT" | "DELETE";
+import { RequestMethod } from "@/app/app/page";
 
 type Props = {
   method: RequestMethod;

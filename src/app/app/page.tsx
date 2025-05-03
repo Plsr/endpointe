@@ -4,6 +4,7 @@ import { useAction } from "next-safe-action/hooks";
 import { getUrlPayload } from "./actions";
 import { useEffect, useState, useRef } from "react";
 import { RequestTypePill } from "@/components/requestTypePill";
+import { RequestsList } from "@/components/requestsList";
 
 export default function App() {
   const { execute, result } = useAction(getUrlPayload);
@@ -78,18 +79,13 @@ export default function App() {
   return (
     <div className="grid grid-cols-12">
       <div className="p-4 col-span-2">
-        {requests.map((request) => (
-          <div
-            key={request.id}
-            className={`p-2 flex flex-row items-center gap-2 overflow-hidden text-ellipsis ${
-              selectedRequest?.id === request.id ? "bg-gray-800" : ""
-            }`}
-            onClick={() => setSelectedRequest(request)}
-          >
-            <RequestTypePill method={request.method} />
-            <span className="text-sm">{request.name}</span>
-          </div>
-        ))}
+        <RequestsList
+          requests={requests}
+          activeRequestId={selectedRequest.id}
+          setActiveRequestId={(requestId) =>
+            setSelectedRequest(getRequestById(requestId))
+          }
+        />
       </div>
       <div className=" p-4 col-span-5">
         <div className="flex items-center flex-row gap-2 w-full">
@@ -105,7 +101,9 @@ export default function App() {
             name="method"
             value={selectedRequest?.method}
             onChange={(e) => {
-              updateRequest(selectedRequest.id, { method: e.target.value });
+              updateRequest(selectedRequest.id, {
+                method: e.target.value as RequestMethod,
+              });
               setRequests(getRequests());
               setSelectedRequest(getRequestById(selectedRequest.id));
             }}
@@ -127,11 +125,12 @@ export default function App() {
   );
 }
 
-type AppRequest = {
+export type RequestMethod = "GET" | "POST" | "PATCH" | "PUT" | "DELETE";
+export type AppRequest = {
   id: string;
   url: string;
   name: string;
-  method: string;
+  method: RequestMethod;
   lastResponse: any;
   createdAt: Date;
 };
