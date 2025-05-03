@@ -134,7 +134,7 @@ export type AppRequest = {
   url: string;
   name: string;
   method: RequestMethod;
-  lastResponse: Record<string, any> | null;
+  lastResponse: Record<string, string | number | boolean | null> | null;
   createdAt: Date;
 };
 
