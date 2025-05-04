@@ -40,15 +40,23 @@ export const RequestsList = ({
   }, [activeRequestId, requests, setActiveRequestId]);
 
   return (
-    <div className="flex flex-col gap-2">
-      {requests.map((request) => (
-        <RequestItem
-          key={request.id}
-          request={request}
-          active={activeRequestId === request.id}
-          onClick={() => setActiveRequestId(request.id)}
-        />
-      ))}
+    <div>
+      <div className="flex items-center justify-between mb-4">
+        <h2 className="font-bold text-sm">Requests</h2>
+        <div className="text-xs px-2 py-1 rounded-md bg-stone-900 hover:bg-stone-800 border border-stone-800 cursor-pointer transition-all">
+          Add new
+        </div>
+      </div>
+      <div className="flex flex-col gap-2">
+        {requests.map((request) => (
+          <RequestItem
+            key={request.id}
+            request={request}
+            active={activeRequestId === request.id}
+            onClick={() => setActiveRequestId(request.id)}
+          />
+        ))}
+      </div>
     </div>
   );
 };
@@ -67,8 +75,8 @@ const RequestItem = ({ request, active, onClick }: RequestItemProps) => {
   return (
     <div
       key={request.id}
-      className={`p-2 flex flex-row items-center gap-2 overflow-hidden text-ellipsis ${
-        active ? "bg-gray-800" : ""
+      className={`p-2 flex flex-col items-start gap-2 overflow-hidden text-ellipsis ${
+        active ? "bg-stone-800 rounded-lg" : ""
       }`}
       onClick={handleClick}
     >

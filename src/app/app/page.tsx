@@ -52,7 +52,7 @@ export default function App() {
   };
 
   return (
-    <div className="grid grid-cols-12">
+    <div className="grid grid-cols-12 h-full min-h-screen">
       <div className="p-4 col-span-2">
         <RequestsList
           requests={requests}
@@ -62,18 +62,20 @@ export default function App() {
           }
         />
       </div>
-      <div className=" p-4 col-span-5">
-        {selectedRequest && (
-          <RequestDetails
-            key={selectedRequest.id}
-            data={selectedRequest}
-            onUpdate={(payload) => updateRequest(selectedRequest.id, payload)}
-            onSubmit={handleSubmit}
-          />
-        )}
-      </div>
-      <div className="p-4 col-span-5">
-        <pre>{JSON.stringify(selectedRequest?.lastResponse, null, 2)}</pre>
+      <div className="[scrollbar-width:none] [&::-webkit-scrollbar]:hidden p-4 col-span-10 grid grid-cols-12 bg-stone-900 m-4 rounded-lg border border-stone-800 overflow-scroll">
+        <div className=" p-4 col-span-4">
+          {selectedRequest && (
+            <RequestDetails
+              key={selectedRequest.id}
+              data={selectedRequest}
+              onUpdate={(payload) => updateRequest(selectedRequest.id, payload)}
+              onSubmit={handleSubmit}
+            />
+          )}
+        </div>
+        <div className="p-4 col-span-8 overflow-hidden">
+          <pre>{JSON.stringify(selectedRequest?.lastResponse, null, 2)}</pre>
+        </div>
       </div>
     </div>
   );

@@ -8,14 +8,14 @@ export const RequestTypePill = ({ method }: Props) => {
   const getBgColor = () => {
     switch (method) {
       case "GET":
-        return "bg-blue-800";
+        return "bg-[#4c67b7] text-[#d0daf5]";
       case "POST":
-        return "bg-green-600";
+        return "bg-[#4CB782] text-[#0d2117]";
       case "PUT":
       case "PATCH":
-        return "bg-yellow-600";
+        return "bg-[#e6ad4c] text-[#241b0b]";
       case "DELETE":
-        return "bg-red-600";
+        return "bg-[#b74c53] text-[#e3c3c6]";
       default:
         return "bg-gray-800";
     }
@@ -23,7 +23,7 @@ export const RequestTypePill = ({ method }: Props) => {
 
   return (
     <div
-      className={`inline text-xs text-white ${getBgColor()} px-2 py-1 rounded-md`}
+      className={`inline text-[0.6rem] font-bold  ${getBgColor()} px-2 py-1 rounded-md`}
     >
       {method}
     </div>
