@@ -51,6 +51,15 @@ export default function App() {
     execute({ url });
   };
 
+  const handleUpdateRequest = (
+    requestId: string,
+    payload: Partial<AppRequest>
+  ) => {
+    updateRequest(requestId, { ...payload, name: payload.url });
+    setRequests(getRequests());
+    setSelectedRequest(getRequestById(requestId));
+  };
+
   return (
     <div className="grid grid-cols-12 h-full min-h-screen">
       <div className="p-4 col-span-2">
@@ -68,7 +77,9 @@ export default function App() {
             <RequestDetails
               key={selectedRequest.id}
               data={selectedRequest}
-              onUpdate={(payload) => updateRequest(selectedRequest.id, payload)}
+              onUpdate={(payload) =>
+                handleUpdateRequest(selectedRequest.id, payload)
+              }
               onSubmit={handleSubmit}
             />
           )}

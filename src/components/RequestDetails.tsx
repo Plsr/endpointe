@@ -17,7 +17,7 @@ export const RequestDetails = ({ data, onUpdate, onSubmit }: Props) => {
 
   const debouncedOnUpdate = useMemo(
     () => debounce((url: string) => onUpdate({ url }), 500),
-    [onUpdate]
+    [] // eslint-disable-line react-hooks/exhaustive-deps
   );
 
   useEffect(() => {
