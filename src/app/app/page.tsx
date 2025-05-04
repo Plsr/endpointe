@@ -7,12 +7,10 @@ import { RequestsList } from "@/components/RequestsList";
 import { RequestDetails } from "@/components/RequestDetails";
 export default function App() {
   const { execute, result } = useAction(getUrlPayload);
-  const [url, setUrl] = useState("");
   const [requests, setRequests] = useState<AppRequest[]>([]);
   const [selectedRequest, setSelectedRequest] = useState<
     AppRequest | undefined
   >();
-  const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     setRequests(getRequests());
@@ -49,13 +47,6 @@ export default function App() {
     };
   }, []);
 
-  // Set initial URL from selected request
-  useEffect(() => {
-    if (selectedRequest) {
-      setUrl(selectedRequest.url || "");
-    }
-  }, [selectedRequest]);
-
   const handleSubmit = (url: string) => {
     execute({ url });
   };
@@ -74,6 +65,7 @@ export default function App() {
       <div className=" p-4 col-span-5">
         {selectedRequest && (
           <RequestDetails
+            key={selectedRequest.id}
             data={selectedRequest}
             onUpdate={(payload) => updateRequest(selectedRequest.id, payload)}
             onSubmit={handleSubmit}
