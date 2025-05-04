@@ -1,5 +1,5 @@
 import { AppRequest } from "@/app/app/page";
-import { RequestTypePill } from "./requestTypePill";
+import { RequestTypePill } from "./RequestTypePill";
 import { useEffect } from "react";
 
 type RequestsListProps = {

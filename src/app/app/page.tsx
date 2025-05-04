@@ -3,8 +3,8 @@
 import { useAction } from "next-safe-action/hooks";
 import { getUrlPayload } from "./actions";
 import { useEffect, useState, useRef } from "react";
-import { RequestsList } from "@/components/requestsList";
-
+import { RequestsList } from "@/components/RequestsList";
+import { RequestDetails } from "@/components/RequestDetails";
 export default function App() {
   const { execute, result } = useAction(getUrlPayload);
   const [url, setUrl] = useState("");
@@ -56,32 +56,7 @@ export default function App() {
     }
   }, [selectedRequest]);
 
-  // Update selected request URL with debounce
-  useEffect(() => {
-    if (!selectedRequest) return;
-
-    // Clear any existing timer
-    if (debounceTimerRef.current) {
-      clearTimeout(debounceTimerRef.current);
-    }
-
-    // Set a new timer
-    debounceTimerRef.current = setTimeout(() => {
-      // Only update if the URL actually changed
-      if (url !== selectedRequest.url) {
-        updateRequest(selectedRequest.id, { url, name: url });
-        setRequests(getRequests()); // Refresh requests list
-      }
-    }, 500); // 500ms debounce
-
-    return () => {
-      if (debounceTimerRef.current) {
-        clearTimeout(debounceTimerRef.current);
-      }
-    };
-  }, [url, selectedRequest]);
-
-  const handleSubmit = () => {
+  const handleSubmit = (url: string) => {
     execute({ url });
   };
 
@@ -97,35 +72,13 @@ export default function App() {
         />
       </div>
       <div className=" p-4 col-span-5">
-        <div className="flex items-center flex-row gap-2 w-full">
-          <input
-            type="text"
-            name="url"
-            className="w-full"
-            placeholder="URL"
-            value={url}
-            onChange={(e) => setUrl(e.target.value)}
+        {selectedRequest && (
+          <RequestDetails
+            data={selectedRequest}
+            onUpdate={(payload) => updateRequest(selectedRequest.id, payload)}
+            onSubmit={handleSubmit}
           />
-          <select
-            name="method"
-            value={selectedRequest?.method}
-            onChange={(e) => {
-              updateRequest(selectedRequest!.id, {
-                method: e.target.value as RequestMethod,
-              });
-              setRequests(getRequests());
-              setSelectedRequest(getRequestById(selectedRequest!.id));
-            }}
-          >
-            <option value="GET">GET</option>
-            <option value="POST">POST</option>
-            <option value="PUT">PUT</option>
-            <option value="DELETE">DELETE</option>
-          </select>
-          <button type="submit" onClick={handleSubmit}>
-            Send
-          </button>
-        </div>
+        )}
       </div>
       <div className="p-4 col-span-5">
         <pre>{JSON.stringify(selectedRequest?.lastResponse, null, 2)}</pre>
