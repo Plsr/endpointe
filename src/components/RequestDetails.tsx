@@ -15,14 +15,14 @@ type Props = {
 export const RequestDetails = ({ data, onUpdate, onSubmit }: Props) => {
   const [urlValue, setUrlValue] = useState(data.url);
 
-  useEffect(() => {
-    debouncedOnUpdate(urlValue);
-  }, [urlValue]);
-
   const debouncedOnUpdate = useMemo(
     () => debounce((url: string) => onUpdate({ url }), 500),
     [onUpdate]
   );
+
+  useEffect(() => {
+    debouncedOnUpdate(urlValue);
+  }, [urlValue, debouncedOnUpdate]);
 
   const handleChangeUrl = (e: ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;

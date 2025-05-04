@@ -2,7 +2,7 @@
 
 import { useAction } from "next-safe-action/hooks";
 import { getUrlPayload } from "./actions";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import { RequestsList } from "@/components/RequestsList";
 import { RequestDetails } from "@/components/RequestDetails";
 export default function App() {
