@@ -18,14 +18,6 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    if (!selectedRequest) return;
-
-    updateRequest(selectedRequest.id, { lastResponse: result.data });
-    setSelectedRequest(getRequestById(selectedRequest.id));
-    setRequests(getRequests());
-  }, [result]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (typeof window === "undefined") return;
       // Only trigger on body
@@ -52,16 +44,15 @@ export default function App() {
   };
 
   const handleUpdateRequest = (
-    requestId: string,
-    payload: Partial<AppRequest>
+    _requestId: string,
+    _payload: Partial<AppRequest>
   ) => {
-    updateRequest(requestId, { ...payload, name: payload.url });
-    setRequests(getRequests());
-    setSelectedRequest(getRequestById(requestId));
+    // noop
+    console.log("handleUpdateRequest", _requestId, _payload);
   };
 
   return (
-    <div className="grid grid-cols-12 h-full min-h-screen">
+    <div className="grid grid-cols-12 h-full h-screen">
       <div className="p-4 col-span-2">
         <RequestsList
           requests={requests}
@@ -71,8 +62,8 @@ export default function App() {
           }
         />
       </div>
-      <div className="[scrollbar-width:none] [&::-webkit-scrollbar]:hidden p-4 col-span-10 grid grid-cols-12 bg-stone-900 m-4 rounded-lg border border-stone-800 overflow-scroll">
-        <div className=" p-4 col-span-4">
+      <div className="[scrollbar-width:none] [&::-webkit-scrollbar]:hidden p-4 col-span-10 grid grid-cols-12 bg-stone-900  max-h-full border border-stone-800 overflow-scroll">
+        <div className=" px-4 col-span-6">
           {selectedRequest && (
             <RequestDetails
               key={selectedRequest.id}
@@ -84,7 +75,7 @@ export default function App() {
             />
           )}
         </div>
-        <div className="p-4 col-span-8 overflow-hidden">
+        <div className="p-4 col-span-6  border border-stone-700 rounded-lg bg-stone-800 text-sm overflow-scroll">
           <pre>{JSON.stringify(selectedRequest?.lastResponse, null, 2)}</pre>
         </div>
       </div>

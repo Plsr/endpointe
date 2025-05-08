@@ -1,6 +1,5 @@
 import { AppRequest } from "@/app/app/page";
 import { RequestTypePill } from "./RequestTypePill";
-import { useEffect } from "react";
 
 type RequestsListProps = {
   requests: AppRequest[];
@@ -13,32 +12,6 @@ export const RequestsList = ({
   activeRequestId,
   setActiveRequestId,
 }: RequestsListProps) => {
-  useEffect(() => {
-    const keydownListener = (event: KeyboardEvent) => {
-      if (event.key === "ArrowDown" || event.key === "j") {
-        const currentIndex = requests.findIndex(
-          (request) => request.id === activeRequestId
-        );
-        const nextIndex = currentIndex + 1;
-        setActiveRequestId(requests[nextIndex].id);
-      }
-
-      if (event.key === "ArrowUp" || event.key === "k") {
-        const currentIndex = requests.findIndex(
-          (request) => request.id === activeRequestId
-        );
-        const nextIndex = currentIndex - 1;
-        setActiveRequestId(requests[nextIndex].id);
-      }
-    };
-
-    window.addEventListener("keydown", keydownListener);
-
-    return () => {
-      window.removeEventListener("keydown", keydownListener);
-    };
-  }, [activeRequestId, requests, setActiveRequestId]);
-
   return (
     <div>
       <div className="flex items-center justify-between mb-4">
@@ -53,7 +26,9 @@ export const RequestsList = ({
             key={request.id}
             request={request}
             active={activeRequestId === request.id}
-            onClick={() => setActiveRequestId(request.id)}
+            onClick={() => {
+              setActiveRequestId(request.id);
+            }}
           />
         ))}
       </div>
@@ -75,7 +50,7 @@ const RequestItem = ({ request, active, onClick }: RequestItemProps) => {
   return (
     <div
       key={request.id}
-      className={`p-2 flex flex-col items-start gap-2 overflow-hidden text-ellipsis ${
+      className={`p-2 flex flex-row items-start gap-2 overflow-hidden text-ellipsis cursor-pointer ${
         active ? "bg-stone-800 rounded-lg" : ""
       }`}
       onClick={handleClick}
