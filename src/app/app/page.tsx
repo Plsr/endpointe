@@ -74,6 +74,7 @@ export default function App() {
 
     requestsCopy[selectedRequestIndex] = updatedRequest;
     setRequests(requestsCopy);
+    saveRequests(requestsCopy);
   };
 
   const handleUpdateRequest = (
@@ -159,15 +160,7 @@ const getRequests = () => {
   return JSON.parse(requests) as AppRequest[];
 };
 
-const getRequestById = (requestId: string) => {
-  const requests = getRequests();
-  return requests.find((r) => r.id === requestId);
-};
-
-const updateRequest = (requestId: string, payload: Partial<AppRequest>) => {
-  const requests = getRequests();
-  const index = requests.findIndex((r) => r.id === requestId);
-  requests[index] = { ...requests[index], ...payload };
+const saveRequests = (requests: AppRequest[]) => {
   window.localStorage.setItem("requests", JSON.stringify(requests));
 };
 
