@@ -3,14 +3,14 @@ import { RequestTypePill } from "./RequestTypePill";
 
 type RequestsListProps = {
   requests: AppRequest[];
-  activeRequestId?: string;
-  setActiveRequestId: (requestId: string) => void;
+  selectedRequestIndex: number;
+  setSelectedRequestIndex: (requestIndex: number) => void;
 };
 
 export const RequestsList = ({
   requests,
-  activeRequestId,
-  setActiveRequestId,
+  selectedRequestIndex,
+  setSelectedRequestIndex,
 }: RequestsListProps) => {
   return (
     <div>
@@ -21,13 +21,13 @@ export const RequestsList = ({
         </div>
       </div>
       <div className="flex flex-col gap-2">
-        {requests.map((request) => (
+        {requests.map((request, index) => (
           <RequestItem
             key={request.id}
             request={request}
-            active={activeRequestId === request.id}
+            active={index === selectedRequestIndex}
             onClick={() => {
-              setActiveRequestId(request.id);
+              setSelectedRequestIndex(index);
             }}
           />
         ))}

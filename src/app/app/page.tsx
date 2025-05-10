@@ -5,42 +5,75 @@ import { getUrlPayload } from "./actions";
 import { useEffect, useState } from "react";
 import { RequestsList } from "@/components/RequestsList";
 import { RequestDetails } from "@/components/RequestDetails";
+import { useHotkeyListener } from "@/hooks/useHotkeyListener";
+
+export type RequestPayload = {
+  url: string;
+  method: RequestMethod;
+  body?: string;
+};
+
+const DEFAULT_REQUEST_NAME = "New Request";
+
 export default function App() {
   const { execute, result } = useAction(getUrlPayload);
   const [requests, setRequests] = useState<AppRequest[]>([]);
-  const [selectedRequest, setSelectedRequest] = useState<
-    AppRequest | undefined
-  >();
+
+  const [selectedRequestIndex, setSelectedRequestIndex] = useState<number>(0);
+
+  console.log(requests);
+  console.log(selectedRequestIndex);
 
   useEffect(() => {
     setRequests(getRequests());
-    setSelectedRequest(getRequests()[0]);
   }, []);
 
-  useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (typeof window === "undefined") return;
-      // Only trigger on body
-      if (!(event.target instanceof HTMLBodyElement)) {
-        return;
-      }
-
-      if (event.key === "c") {
+  useHotkeyListener({
+    hotkeys: ["c"],
+    onHotkeyPress: (key) => {
+      if (key === "c") {
         createNewRequest();
         setRequests(getRequests());
-        setSelectedRequest(getRequests()[getRequests().length - 1]);
+        setSelectedRequestIndex(getRequests().length - 1);
       }
+    },
+  });
+
+  // TODO: Will not scale well with many requests, probably
+  const handleSubmit = async (payload: RequestPayload) => {
+    const { url, method, body } = payload;
+    const result = await getUrlPayload({ url, method, body });
+
+    if (!result) {
+      // TODO: Error handling
+      return;
+    }
+
+    const requestsCopy = [...requests];
+    const updatedRequest = {
+      ...requestsCopy[selectedRequestIndex],
+      name: getUpdatedRequestName(requestsCopy[selectedRequestIndex].name, url),
+      method,
+      url,
+      body,
     };
 
-    window.addEventListener("keydown", handleKeyDown);
+    if (result?.serverError) {
+      // TODO: Error handling
+      console.error(result.serverError);
+    }
 
-    return () => {
-      window.removeEventListener("keydown", handleKeyDown);
-    };
-  }, []);
+    if (result?.validationErrors) {
+      // TODO: Error handling
+      console.error(result.validationErrors);
+    }
 
-  const handleSubmit = (url: string) => {
-    execute({ url });
+    if (result?.data) {
+      updatedRequest.lastResponse = result.data;
+    }
+
+    requestsCopy[selectedRequestIndex] = updatedRequest;
+    setRequests(requestsCopy);
   };
 
   const handleUpdateRequest = (
@@ -51,32 +84,38 @@ export default function App() {
     console.log("handleUpdateRequest", _requestId, _payload);
   };
 
+  if (!requests || requests.length === 0) {
+    return <div>No requests</div>;
+  }
+
   return (
     <div className="grid grid-cols-12 h-full h-screen">
       <div className="p-4 col-span-2">
         <RequestsList
           requests={requests}
-          activeRequestId={selectedRequest?.id}
-          setActiveRequestId={(requestId) =>
-            setSelectedRequest(getRequestById(requestId))
-          }
+          selectedRequestIndex={selectedRequestIndex}
+          setSelectedRequestIndex={setSelectedRequestIndex}
         />
       </div>
       <div className="[scrollbar-width:none] [&::-webkit-scrollbar]:hidden p-4 col-span-10 grid grid-cols-12 bg-stone-900  max-h-full border border-stone-800 overflow-scroll">
         <div className=" px-4 col-span-6">
-          {selectedRequest && (
-            <RequestDetails
-              key={selectedRequest.id}
-              data={selectedRequest}
-              onUpdate={(payload) =>
-                handleUpdateRequest(selectedRequest.id, payload)
-              }
-              onSubmit={handleSubmit}
-            />
-          )}
+          <RequestDetails
+            key={requests[selectedRequestIndex].id}
+            data={requests[selectedRequestIndex]}
+            onUpdate={(payload) =>
+              handleUpdateRequest(requests[selectedRequestIndex].id, payload)
+            }
+            onSubmit={handleSubmit}
+          />
         </div>
         <div className="p-4 col-span-6  border border-stone-700 rounded-lg bg-stone-800 text-sm overflow-scroll">
-          <pre>{JSON.stringify(selectedRequest?.lastResponse, null, 2)}</pre>
+          <pre>
+            {JSON.stringify(
+              requests[selectedRequestIndex]?.lastResponse,
+              null,
+              2
+            )}
+          </pre>
         </div>
       </div>
     </div>
@@ -89,6 +128,7 @@ export type AppRequest = {
   url: string;
   name: string;
   method: RequestMethod;
+  body?: string;
   lastResponse: Record<string, string | number | boolean | null> | null;
   createdAt: Date;
 };
@@ -97,8 +137,9 @@ const createNewRequest = () => {
   const bareRequest = {
     id: crypto.randomUUID(),
     url: "",
-    name: "New Request",
+    name: DEFAULT_REQUEST_NAME,
     method: "GET",
+    body: "",
     lastResponse: null,
     createdAt: new Date(),
   } satisfies AppRequest;
@@ -128,4 +169,11 @@ const updateRequest = (requestId: string, payload: Partial<AppRequest>) => {
   const index = requests.findIndex((r) => r.id === requestId);
   requests[index] = { ...requests[index], ...payload };
   window.localStorage.setItem("requests", JSON.stringify(requests));
+};
+
+const getUpdatedRequestName = (currentName: string, url: string): string => {
+  if (currentName === DEFAULT_REQUEST_NAME) {
+    return url;
+  }
+  return currentName;
 };
