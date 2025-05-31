@@ -1,5 +1,5 @@
 import { ClearLocalDataButton } from "@/components/ClearLocalDataButton";
-import { ArrowLeft, Trash } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 
 export default function SettingsPage() {
