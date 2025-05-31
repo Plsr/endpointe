@@ -38,7 +38,8 @@ export const RequestDetails = ({ data, onUpdate, onSubmit }: Props) => {
     setBodyValue(value);
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
     onSubmit({
       url: urlValue,
       method: methodValue,
@@ -50,7 +51,7 @@ export const RequestDetails = ({ data, onUpdate, onSubmit }: Props) => {
 
   return (
     <div className="flex flex-col w-full gap-2">
-      <div className="flex items-center flex-row gap-2 w-full border border-stone-700 rounded-md px-2">
+      <form className="flex items-center flex-row gap-2 w-full border border-stone-700 rounded-md px-2">
         <select
           name="method"
           value={methodValue}
@@ -71,7 +72,7 @@ export const RequestDetails = ({ data, onUpdate, onSubmit }: Props) => {
         <button type="submit" onClick={handleSubmit}>
           <SendHorizonalIcon className="w-4 h-4" />
         </button>
-      </div>
+      </form>
 
       {showBodyField && (
         <textarea

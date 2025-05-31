@@ -18,18 +18,31 @@ export default function App() {
   const [requests, setRequests] = useState<AppRequest[]>([]);
 
   const [selectedRequestIndex, setSelectedRequestIndex] = useState<number>(0);
+  console.log("selectedRequestIndex", selectedRequestIndex);
 
   useEffect(() => {
     setRequests(getRequests());
   }, []);
 
   useHotkeyListener({
-    hotkeys: ["c"],
+    hotkeys: ["c", "ArrowUp", "ArrowDown"],
     onHotkeyPress: (key) => {
       if (key === "c") {
         createNewRequest();
         setRequests(getRequests());
         setSelectedRequestIndex(getRequests().length - 1);
+      }
+
+      if (key === "ArrowUp") {
+        setSelectedRequestIndex((prev) =>
+          prev > 0 ? prev - 1 : requests.length - 1
+        );
+      }
+
+      if (key === "ArrowDown") {
+        setSelectedRequestIndex((prev) =>
+          prev < requests.length - 1 ? prev + 1 : 0
+        );
       }
     },
   });
