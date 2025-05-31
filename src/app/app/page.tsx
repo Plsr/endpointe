@@ -6,6 +6,8 @@ import { RequestsList } from "@/components/RequestsList";
 import { RequestDetails } from "@/components/RequestDetails";
 import { useHotkeyListener } from "@/hooks/useHotkeyListener";
 import { AppRequest, createBareRequest, RequestMethod } from "@/lib/request";
+import { CogIcon } from "lucide-react";
+import Link from "next/link";
 
 export type RequestPayload = {
   url: string;
@@ -105,13 +107,21 @@ export default function App() {
 
   return (
     <div className="grid grid-cols-12 h-screen">
-      <div className="p-4 col-span-2">
+      <div className="col-span-2 flex flex-col max-h-screen">
         <RequestsList
           requests={requests}
           selectedRequestIndex={selectedRequestIndex}
           setSelectedRequestIndex={setSelectedRequestIndex}
           onAddRequest={addNewRequest}
         />
+        <div className="mt-auto border-t border-t-stone-700 p-4">
+          <Link
+            href="/settings"
+            className="inline-flex items-center gap-2 text-xs px-2 py-1 rounded-md bg-stone-900 hover:bg-stone-800 border border-stone-800 cursor-pointer transition-all"
+          >
+            <CogIcon className="w-4 h-4" /> Settings
+          </Link>
+        </div>
       </div>
       <div className="[scrollbar-width:none] [&::-webkit-scrollbar]:hidden p-4 col-span-10 grid grid-cols-12 bg-stone-900  max-h-full border border-stone-800 overflow-scroll">
         <div className=" px-4 col-span-6">

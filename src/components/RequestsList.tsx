@@ -15,7 +15,7 @@ export const RequestsList = ({
   onAddRequest,
 }: RequestsListProps) => {
   return (
-    <div>
+    <div className="overflow-y-scroll p-4">
       <div className="flex items-center justify-between mb-4">
         <h2 className="font-bold text-sm">Requests</h2>
         <button
