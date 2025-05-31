@@ -28,9 +28,7 @@ export default function App() {
     hotkeys: ["c", "ArrowUp", "ArrowDown"],
     onHotkeyPress: (key) => {
       if (key === "c") {
-        createNewRequest();
-        setRequests(getRequests());
-        setSelectedRequestIndex(getRequests().length - 1);
+        addNewRequest();
       }
 
       if (key === "ArrowUp") {
@@ -93,17 +91,24 @@ export default function App() {
     console.log("handleUpdateRequest", _requestId, _payload);
   };
 
+  const addNewRequest = () => {
+    createNewRequest();
+    setRequests(getRequests());
+    setSelectedRequestIndex(getRequests().length - 1);
+  };
+
   if (!requests || requests.length === 0) {
     return <div>No requests</div>;
   }
 
   return (
-    <div className="grid grid-cols-12 h-full h-screen">
+    <div className="grid grid-cols-12 h-screen">
       <div className="p-4 col-span-2">
         <RequestsList
           requests={requests}
           selectedRequestIndex={selectedRequestIndex}
           setSelectedRequestIndex={setSelectedRequestIndex}
+          onAddRequest={addNewRequest}
         />
       </div>
       <div className="[scrollbar-width:none] [&::-webkit-scrollbar]:hidden p-4 col-span-10 grid grid-cols-12 bg-stone-900  max-h-full border border-stone-800 overflow-scroll">
