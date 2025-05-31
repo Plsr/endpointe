@@ -1,6 +1,5 @@
 "use client";
 
-import { useAction } from "next-safe-action/hooks";
 import { getUrlPayload } from "./actions";
 import { useEffect, useState } from "react";
 import { RequestsList } from "@/components/RequestsList";
@@ -16,13 +15,9 @@ export type RequestPayload = {
 const DEFAULT_REQUEST_NAME = "New Request";
 
 export default function App() {
-  const { execute, result } = useAction(getUrlPayload);
   const [requests, setRequests] = useState<AppRequest[]>([]);
 
   const [selectedRequestIndex, setSelectedRequestIndex] = useState<number>(0);
-
-  console.log(requests);
-  console.log(selectedRequestIndex);
 
   useEffect(() => {
     setRequests(getRequests());
