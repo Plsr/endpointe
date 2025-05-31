@@ -1,4 +1,4 @@
-import { AppRequest } from "@/app/app/page";
+import { AppRequest } from "@/lib/request";
 import { RequestTypePill } from "./RequestTypePill";
 
 type RequestsListProps = {

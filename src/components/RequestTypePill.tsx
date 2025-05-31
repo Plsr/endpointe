@@ -1,4 +1,4 @@
-import { RequestMethod } from "@/app/app/page";
+import { RequestMethod } from "@/lib/request";
 
 type Props = {
   method: RequestMethod;

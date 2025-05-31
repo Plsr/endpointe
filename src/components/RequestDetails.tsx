@@ -1,4 +1,5 @@
-import { RequestMethod, RequestPayload } from "@/app/app/page";
+import { RequestPayload } from "@/app/app/page";
+import { RequestMethod } from "@/lib/request";
 import { debounce } from "@/util/debounce";
 import { SendHorizonalIcon } from "lucide-react";
 import { ChangeEvent, useEffect, useMemo, useState } from "react";

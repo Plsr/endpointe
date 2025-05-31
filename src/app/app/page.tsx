@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { RequestsList } from "@/components/RequestsList";
 import { RequestDetails } from "@/components/RequestDetails";
 import { useHotkeyListener } from "@/hooks/useHotkeyListener";
+import { AppRequest, createBareRequest, RequestMethod } from "@/lib/request";
 
 export type RequestPayload = {
   url: string;
@@ -92,9 +93,10 @@ export default function App() {
   };
 
   const addNewRequest = () => {
-    createNewRequest();
-    setRequests(getRequests());
-    setSelectedRequestIndex(getRequests().length - 1);
+    const updatedRequests = [...requests, { ...createBareRequest() }];
+    setRequests(updatedRequests);
+    setSelectedRequestIndex(updatedRequests.length - 1);
+    saveRequests(requests);
   };
 
   if (!requests || requests.length === 0) {
@@ -135,35 +137,6 @@ export default function App() {
     </div>
   );
 }
-
-export type RequestMethod = "GET" | "POST" | "PATCH" | "PUT" | "DELETE";
-export type AppRequest = {
-  id: string;
-  url: string;
-  name: string;
-  method: RequestMethod;
-  body?: string;
-  lastResponse: Record<string, string | number | boolean | null> | null;
-  createdAt: Date;
-};
-
-const createNewRequest = () => {
-  const bareRequest = {
-    id: crypto.randomUUID(),
-    url: "",
-    name: DEFAULT_REQUEST_NAME,
-    method: "GET",
-    body: "",
-    lastResponse: null,
-    createdAt: new Date(),
-  } satisfies AppRequest;
-
-  const requests = getRequests();
-  window.localStorage.setItem(
-    "requests",
-    JSON.stringify([...requests, bareRequest])
-  );
-};
 
 const getRequests = () => {
   const requests = window.localStorage.getItem("requests");
