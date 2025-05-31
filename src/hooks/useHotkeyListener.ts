@@ -17,6 +17,8 @@ export const useHotkeyListener = ({
         return;
       }
 
+      event.preventDefault();
+
       if (hotkeys.includes(event.key)) {
         onHotkeyPress(event.key);
       }
