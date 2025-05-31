@@ -102,7 +102,7 @@ export default function App() {
   };
 
   if (!requests || requests.length === 0) {
-    return <div>No requests</div>;
+    return <EmptyState />;
   }
 
   return (
@@ -165,4 +165,20 @@ const getUpdatedRequestName = (currentName: string, url: string): string => {
     return url;
   }
   return currentName;
+};
+
+const EmptyState = () => {
+  return (
+    <div className="h-screen w-full flex flex-col items-center justify-center">
+      <div className="text-lg font-bold">⤜(ⱺ ʖ̯ⱺ)⤏</div>
+      <h2 className="text-xl font-bold mb-4">No requests yet</h2>
+      <div>
+        Press{" "}
+        <div className="inline-flex border border-stone-600 rounded px-2">
+          c
+        </div>{" "}
+        to create one
+      </div>
+    </div>
+  );
 };
