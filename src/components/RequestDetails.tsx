@@ -68,7 +68,6 @@ export const RequestDetails = ({ data, onUpdate, onSubmit }: Props) => {
           className="w-full border-none p-2 focus:outline-none focus:ring-0 "
           placeholder="URL"
           value={urlValue}
-          autoFocus
           onChange={handleChangeUrl}
         />
         <button type="submit" onClick={handleSubmit}>
