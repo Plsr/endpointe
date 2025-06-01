@@ -90,14 +90,6 @@ export default function App() {
     saveRequests(requestsCopy);
   };
 
-  const handleUpdateRequest = (
-    _requestId: string,
-    _payload: Partial<AppRequest>
-  ) => {
-    // noop
-    console.log("handleUpdateRequest", _requestId, _payload);
-  };
-
   const addNewRequest = () => {
     const updatedRequests = [...requests, { ...createBareRequest() }];
     setRequests(updatedRequests);
@@ -145,9 +137,6 @@ export default function App() {
           <RequestDetails
             key={requests[selectedRequestIndex].id}
             data={requests[selectedRequestIndex]}
-            onUpdate={(payload) =>
-              handleUpdateRequest(requests[selectedRequestIndex].id, payload)
-            }
             onSubmit={handleSubmit}
           />
         </div>
