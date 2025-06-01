@@ -1,10 +1,17 @@
 export type RequestMethod = "GET" | "POST" | "PATCH" | "PUT" | "DELETE";
+
+export type Header = {
+  key: string;
+  value: string;
+};
+
 export type AppRequest = {
   id: string;
   url: string;
   name: string;
   method: RequestMethod;
   body?: string;
+  headers?: Header[];
   lastResponse: Record<string, string | number | boolean | null> | null;
   createdAt: Date;
 };

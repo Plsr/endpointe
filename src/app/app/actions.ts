@@ -8,6 +8,14 @@ const schema = z
     url: z.string().min(1),
     method: z.enum(["GET", "POST", "PUT", "DELETE", "PATCH"]),
     body: z.string().optional(),
+    headers: z
+      .array(
+        z.object({
+          key: z.string(),
+          value: z.string(),
+        })
+      )
+      .optional(),
   })
   .superRefine((data, ctx) => {
     if (["POST", "PUT", "PATCH"].includes(data.method) && !data.body) {
@@ -19,17 +27,24 @@ const schema = z
   });
 export const getUrlPayload = actionClient
   .schema(schema)
-  .action(async ({ parsedInput: { url, method, body } }) => {
+  .action(async ({ parsedInput: { url, method, body, headers } }) => {
     const options: RequestInit = {
       method,
     };
 
+    const requestHeaders = new Headers();
+    requestHeaders.append("Content-Type", "application/json");
+    if (headers) {
+      headers.forEach((header) =>
+        requestHeaders.append(header.key, header.value)
+      );
+    }
+
     if (body && ["POST", "PUT", "PATCH"].includes(method)) {
-      options.headers = {
-        "Content-Type": "application/json",
-      };
       options.body = body;
     }
+
+    options.headers = requestHeaders;
 
     const response = await fetch(url, options);
     const data = await response.json();
