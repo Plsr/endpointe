@@ -28,10 +28,14 @@ export default function App() {
   }, []);
 
   useHotkeyListener({
-    hotkeys: ["c", "ArrowUp", "ArrowDown"],
+    hotkeys: ["c", "d", "ArrowUp", "ArrowDown"],
     onHotkeyPress: (key) => {
       if (key === "c") {
         addNewRequest();
+      }
+
+      if (key === "d") {
+        deleteRequest(selectedRequestIndex);
       }
 
       if (key === "ArrowUp") {
@@ -99,6 +103,19 @@ export default function App() {
     setRequests(updatedRequests);
     setSelectedRequestIndex(updatedRequests.length - 1);
     saveRequests(requests);
+  };
+
+  const deleteRequest = (index: number) => {
+    const updatedRequests = requests.toSpliced(index, 1);
+
+    const indexToSelect =
+      selectedRequestIndex >= updatedRequests.length
+        ? updatedRequests.length - 1
+        : selectedRequestIndex;
+
+    setRequests(updatedRequests);
+    setSelectedRequestIndex(indexToSelect);
+    saveRequests(updatedRequests);
   };
 
   if (!requests || requests.length === 0) {
