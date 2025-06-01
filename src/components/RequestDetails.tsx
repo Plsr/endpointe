@@ -1,13 +1,16 @@
 import { RequestPayload } from "@/app/app/page";
-import { RequestMethod } from "@/lib/request";
+import { Header, RequestMethod } from "@/lib/request";
 import { SendHorizonalIcon } from "lucide-react";
-import { SubmitHandler, useForm } from "react-hook-form";
+import { SubmitHandler, useFieldArray, useForm } from "react-hook-form";
 
 type RequestData = {
   url: string;
   method: RequestMethod;
   body?: string;
+  headers?: Header[];
 };
+
+type FromData = Omit<RequestData, "headers"> & { headers: Header[] };
 
 type Props = {
   data: RequestData;
@@ -15,16 +18,25 @@ type Props = {
 };
 
 export const RequestDetails = ({ data, onSubmit }: Props) => {
-  const { register, handleSubmit, watch } = useForm<RequestData>({
+  const { register, handleSubmit, watch, control } = useForm<FromData>({
     defaultValues: {
       body: data.body,
       url: data.url,
       method: data.method,
+      headers: data.headers || [{ key: "", value: "" }],
     },
   });
+  const { fields, append } = useFieldArray({
+    control,
+    name: "headers",
+  });
 
-  const submitHandler: SubmitHandler<RequestData> = (data) => {
-    onSubmit(data);
+  const submitHandler: SubmitHandler<FromData> = (data) => {
+    // strip empty headers
+
+    const headers = [...data.headers];
+    headers.filter((header) => !!header.key && !!header.value);
+    onSubmit({ ...data, headers });
   };
 
   const selectedMethod = watch("method");
@@ -56,6 +68,23 @@ export const RequestDetails = ({ data, onSubmit }: Props) => {
         </div>
 
         <div className="mt-6">
+          {fields.map((field, index) => {
+            return (
+              <section key={field.id}>
+                <input
+                  placeholder="header"
+                  {...register(`headers.${index}.key`)}
+                />
+                <input
+                  placeholder="value"
+                  {...register(`headers.${index}.value`)}
+                />
+              </section>
+            );
+          })}
+          <button onClick={() => append({ key: "", value: "" })}>
+            Add header
+          </button>
           {showBodyField && (
             <textarea
               {...register("body")}

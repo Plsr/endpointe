@@ -5,7 +5,12 @@ import { useEffect, useState } from "react";
 import { RequestsList } from "@/components/RequestsList";
 import { RequestDetails } from "@/components/RequestDetails";
 import { useHotkeyListener } from "@/hooks/useHotkeyListener";
-import { AppRequest, createBareRequest, RequestMethod } from "@/lib/request";
+import {
+  AppRequest,
+  createBareRequest,
+  Header,
+  RequestMethod,
+} from "@/lib/request";
 import { CogIcon } from "lucide-react";
 import Link from "next/link";
 
@@ -13,6 +18,7 @@ export type RequestPayload = {
   url: string;
   method: RequestMethod;
   body?: string;
+  headers?: Header[];
 };
 
 const DEFAULT_REQUEST_NAME = "New Request";
@@ -21,7 +27,6 @@ export default function App() {
   const [requests, setRequests] = useState<AppRequest[]>([]);
 
   const [selectedRequestIndex, setSelectedRequestIndex] = useState<number>(0);
-  console.log("selectedRequestIndex", selectedRequestIndex);
 
   useEffect(() => {
     setRequests(getRequests());
@@ -54,8 +59,8 @@ export default function App() {
 
   // TODO: Will not scale well with many requests, probably
   const handleSubmit = async (payload: RequestPayload) => {
-    const { url, method, body } = payload;
-    const result = await getUrlPayload({ url, method, body });
+    const { url, method, body, headers } = payload;
+    const result = await getUrlPayload({ url, method, body, headers });
 
     if (!result) {
       // TODO: Error handling
